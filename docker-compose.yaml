@@ -1,0 +1,48 @@
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:16.1-alpine3.18
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    ports:
+      - "5432:5432"
+    volumes:
+      - /var/lib/postgresql/data
+      - .:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${DB_NAME} -U ${DB_USER}"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+    networks:
+      my_network:
+        ipv4_address: 172.18.0.3
+#  app:
+#    container_name: app
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - '8000:8000'
+#    volumes:
+#      - .:/app
+#    networks:
+#      - my_network
+
+networks:
+  my_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+          gateway: 172.18.0.1
