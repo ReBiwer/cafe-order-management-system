@@ -1,6 +1,15 @@
 from django.db import models
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
+
+
+class Dish(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Название")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
+    description = models.TextField(null=True, blank=True, verbose_name="Описание блюда")
+    available = models.BooleanField(default=True, verbose_name="Наличие блюда")
+
+    def __str__(self):
+        return f"{self.name}"
+
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -29,41 +38,24 @@ class Order(models.Model):
         return f"Заказ #{self.id} (Стол {self.table_number})"
 
 class OrderItem(models.Model):
-    STATUS_CHOICES = [
-        ('processing', 'в обработке'),
-        ('cooking', 'готовят'),
-        ('ready', 'готово'),
-    ]
     order = models.ForeignKey(
         Order,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name='items',
         verbose_name="Заказ"
     )
-    dish_name = models.CharField(max_length=100, verbose_name="Название блюда")
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
-    quantity = models.PositiveIntegerField(default=1, verbose_name="Количество")
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default='processing',
-        verbose_name="Статус"
+    dish = models.ForeignKey(
+        Dish,
+        on_delete=models.PROTECT,
+        related_name='dishes_in_orders',
+        verbose_name="Блюдо в заказе"
     )
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена", null=True, blank=True)
+    quantity = models.PositiveIntegerField(default=1, verbose_name="Количество")
 
+    def save(self, *args, **kwargs):
+        self.price = self.dish.price
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.dish_name} x{self.quantity} {self.status}"
-
-
-@receiver([post_save, post_delete], sender=OrderItem)
-def update_order_total(sender, instance: OrderItem, **kwargs):
-    order = instance.order
-    total = sum(item.price * item.quantity for item in order.items.all())
-    order.total_price = total
-    order.save(update_fields=['total_price'])
-
-
-class Dish(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Название")
-    description = models.TextField(null=True, blank=True, verbose_name="Описание блюда")
-    available = models.BooleanField(default=True, verbose_name="Наличие блюда")
+        return f"{self.dish.name} x{self.quantity}"
