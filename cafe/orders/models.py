@@ -29,6 +29,11 @@ class Order(models.Model):
         return f"Заказ #{self.id} (Стол {self.table_number})"
 
 class OrderItem(models.Model):
+    STATUS_CHOICES = [
+        ('processing', 'в обработке'),
+        ('cooking', 'готовят'),
+        ('ready', 'готово'),
+    ]
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
@@ -38,9 +43,16 @@ class OrderItem(models.Model):
     dish_name = models.CharField(max_length=100, verbose_name="Название блюда")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
     quantity = models.PositiveIntegerField(default=1, verbose_name="Количество")
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='processing',
+        verbose_name="Статус"
+    )
+
 
     def __str__(self):
-        return f"{self.dish_name} x{self.quantity}"
+        return f"{self.dish_name} x{self.quantity} {self.status}"
 
 
 @receiver([post_save, post_delete], sender=OrderItem)
