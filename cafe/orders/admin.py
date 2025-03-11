@@ -12,7 +12,7 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = [
-        "order", "dish_name", "price", "quantity", "status"
+        "order", "price", "quantity",
     ]
 
 @admin.register(Dish)
