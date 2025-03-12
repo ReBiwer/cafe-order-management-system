@@ -36,3 +36,12 @@ class ListOrders(ListView):
     model = Order
     template_name = "orders/list_orders.html"
     context_object_name = "orders"
+
+    def get_queryset(self):
+        queryset = (
+            Order.objects
+            .prefetch_related("items")
+            .prefetch_related("items__dish")
+            .all()
+        )
+        return queryset
