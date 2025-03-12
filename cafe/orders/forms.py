@@ -1,8 +1,8 @@
 from django import forms
 from django.forms import inlineformset_factory
 
-from cafe.orders.models import Order
-from cafe.orders.models import OrderItem
+from .models import Order
+from .models import OrderItem
 
 
 class OrderForm(forms.ModelForm):
@@ -15,6 +15,9 @@ class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem
         fields = ["dish", "quantity"]
+        widgets = {
+            'dish': forms.Select(attrs={'class': 'dish-select'}),
+        }
 
 
 OrderItemFormSet = inlineformset_factory(
@@ -22,5 +25,5 @@ OrderItemFormSet = inlineformset_factory(
     model=OrderItem,
     form=OrderItemForm,
     extra=1,
-    can_delete=False,
+    can_delete=True,
 )
