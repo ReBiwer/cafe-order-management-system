@@ -2,7 +2,7 @@ from django.http import Http404
 from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 
 from orders import utils
 from .forms import OrderForm, OrderItemFormSet
@@ -45,3 +45,9 @@ class ListOrders(ListView):
             .all()
         )
         return queryset
+
+
+class DetailOrder(DetailView):
+    model = Order
+    template_name = "orders/detail_order.html"
+    context_object_name = "order"

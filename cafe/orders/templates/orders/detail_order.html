@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Заказ №{{ order.pk }}
+{% endblock %}
+
+{% block body %}
+  <h1>Заказ №{{ order.pk }}</h1>
+  <h2>Столик №{{ order.table_number }}</h2>
+  <p>Статус: {{ order.status }}</p>
+    <p>Стоимость: {{ order.total_price }}</p>
+
+    <table class="bordered-table">
+      <thead>
+      <tr>Состав заказа</tr>
+      <tr>
+        <th>Блюдо</th>
+        <th>Кол-во</th>
+        <th>Цена</th>
+      </tr>
+      </thead>
+        <tbody>
+        {% for order_item in order.items.all %}
+        <tr>
+          <th>{{ order_item.dish.name }}</th>
+          <th>{{ order_item.quantity }}</th>
+          <th>{{ order_item.price }}</th>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
