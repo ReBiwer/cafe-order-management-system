@@ -22,12 +22,18 @@ document.addEventListener('DOMContentLoaded', function() {
         totalForms.value = formCount + 1; // Обновляем TOTAL_FORMS
     });
 
+    // Добавляем кнопки удаления к существующим формам
+    document.querySelectorAll('.order-item-form').forEach(form => {
+        addRemoveButton(form);
+    });
+
     // Добавляем обработчик для кнопок удаления
     container.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-form')) {
             e.preventDefault();
             const formWrapper = e.target.closest('.order-item-form');
             const deleteCheckbox = formWrapper.querySelector('input[type="checkbox"][name$="-DELETE"]');
+            const formCount = parseInt(totalForms.value);
 
             if (deleteCheckbox) {
                 // Если форма уже существует в БД, помечаем на удаление
@@ -36,21 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 // Если форма новая, удаляем полностью
                 formWrapper.remove();
-                updateTotalForms(-1);
+                totalForms.value = formCount - 1; // Обновляем TOTAL_FORMS
             }
         }
     });
 
-    // Функция обновления счетчика форм
-    function updateTotalForms(change) {
-        const totalForms = document.getElementById('id_orderitem_set-TOTAL_FORMS');
-        totalForms.value = parseInt(totalForms.value) + change;
-    }
 
-    // Добавляем кнопки удаления к существующим формам
-    document.querySelectorAll('.order-item-form').forEach(form => {
-        addRemoveButton(form);
-    });
 
 });
 
