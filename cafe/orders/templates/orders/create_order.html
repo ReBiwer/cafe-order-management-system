@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Create order
+{% endblock %}
+
+<style>
+    .order-item-form {
+        position: relative;
+        margin: 15px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+</style>
+
+{% block body %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <h3>Добавьте блюда в заказ:</h3>
+    {{ formset.management_form }}
+    <div id="order-items">
+        {% for form in formset %}
+            <div class="order-item-form">
+                {{ form.as_p }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="button" id="add-item">Добавить блюдо</button>
+    <button type="submit">Оформить заказ</button>
+</form>
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'js/scripts.js' %}"></script>
+{% endblock %}

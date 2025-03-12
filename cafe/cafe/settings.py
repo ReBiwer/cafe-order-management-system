@@ -57,7 +57,7 @@ ROOT_URLCONF = 'cafe.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR],
+        'DIRS': [BASE_DIR, os.path.join(BASE_DIR, "static")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,6 +68,11 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
 ]
 
 WSGI_APPLICATION = 'cafe.wsgi.application'
