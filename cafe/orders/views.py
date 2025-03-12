@@ -1,12 +1,12 @@
-from orders import utils
+from django.http import Http404
+from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.http import HttpRequest
-from django.http import Http404
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 
+from orders import utils
 from .forms import OrderForm, OrderItemFormSet
-
+from .models import Order
 
 
 class CreateOrder(TemplateView):
@@ -30,3 +30,9 @@ class CreateOrder(TemplateView):
             raise Http404("Ошибка заполнения формы заказа")
         except Exception as e:
             raise Http404(f"Ошибка оформления заказа: {e}")
+
+
+class ListOrders(ListView):
+    model = Order
+    template_name = "orders/list_orders.html"
+    context_object_name = "orders"
