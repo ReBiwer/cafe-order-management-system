@@ -16,7 +16,7 @@
 </style>
 
 {% block body %}
-  <form method="post">
+  <form method="post" action="{% url 'orders:create' %}">
     {% csrf_token %}
     {{ form.as_p }}
 
