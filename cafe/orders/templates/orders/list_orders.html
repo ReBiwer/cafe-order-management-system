@@ -8,7 +8,7 @@
   <h1>Список заказов</h1>
   {% for order in orders %}
   <div>
-    <h3>Заказ №{{ order.pk }}</h3>
+    <h3><a href="{% url 'orders:detail' pk=order.pk %}">Заказ №{{ order.pk }}</a></h3>
     <h4>Стол № {{ order.table_number }}</h4>
     <p>Статус: {{ order.status }}</p>
     <p>Стоимость: {{ order.total_price }}</p>
