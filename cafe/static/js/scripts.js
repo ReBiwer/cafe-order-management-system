@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Замена индексов
         newForm.innerHTML = newForm.innerHTML.replace(
-            /orderitem_set-(\d+)-/g,
-            `orderitem_set-${formCount}-`
+            /items-(\d+)-/g,
+            `items-${formCount}-`
         );
 
         // Очистка значений
