@@ -26,7 +26,7 @@ class CreateOrder(TemplateView):
         try:
             order_pk = utils.create_order(form, formset)
             if order_pk:
-                return redirect(reverse("orders:detail", kwargs={"pk": order_pk}))
+                return redirect(reverse("orders:list"))
             raise Http404("Ошибка заполнения формы заказа")
         except Exception as e:
             raise Http404(f"Ошибка оформления заказа: {e}")
