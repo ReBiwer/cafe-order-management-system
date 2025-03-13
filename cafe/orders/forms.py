@@ -29,6 +29,25 @@ OrderItemFormSet = inlineformset_factory(
 )
 
 class OrderDeleteForm(forms.Form):
+    confirm = forms.BooleanField(
+        label="Подтвердите удаление заказа",
+        required=True,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        error_messages={'required': 'Необходимо подтвердить удаление'}
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.order_id = kwargs.pop('order_id', None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if not cleaned_data.get('confirm'):
+            raise forms.ValidationError("Подтвердите удаление")
+        return cleaned_data
+
+
+class OrderChangeForm(forms.Form):
     class Meta:
         model = Order
-        fields = ["table_number"]
+        fields = ["status"]
