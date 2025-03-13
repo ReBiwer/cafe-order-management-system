@@ -7,7 +7,7 @@
 {% block body %}
   <h1>Заказ №{{ order.pk }}</h1>
   <h2>Столик №{{ order.table_number }}</h2>
-  <p>Статус: {{ order.status }}</p>
+  <p>Статус: {{ order.get_status_display }}</p>
   <p>Стоимость: {{ order.total_price }}</p>
 
     <table class="bordered-table">
@@ -30,4 +30,5 @@
         </tbody>
     </table>
   <a href="{% url 'orders:delete' order.pk %}">Удалить заказ</a>
+  <a href="{% url 'orders:change_status' order.pk %}">Изменить статус заказа</a>
 {% endblock %}

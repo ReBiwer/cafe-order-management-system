@@ -7,11 +7,10 @@
 {% block body %}
   <h1>Увереный что хотите удалить заказ?</h1>
 
-  <form method="POST">
-    {% csrf_token %}
+
     <p>Заказ №{{ order.pk }}</p>
     <p>Номер стола №{{ order.table_number }}</p>
-    <p>Статус: {{ order.status }}</p>
+    <p>Статус: {{ order.get_status_display }}</p>
     <p>Стоимость: {{ order.total_price }}</p>
 
     <table class="bordered-table">
@@ -33,6 +32,8 @@
         {% endfor %}
         </tbody>
     </table>
+  <form method="POST" action="{% url 'orders:delete' order.pk %}">
+    {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Удалить заказ</button>
   </form>
