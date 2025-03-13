@@ -1,3 +1,5 @@
+from adrf.viewsets import ModelViewSet
+
 from django.http import Http404
 from django.http import HttpRequest
 from django.shortcuts import redirect
@@ -7,6 +9,7 @@ from django.views.generic import TemplateView, ListView, DetailView, DeleteView,
 from orders import utils
 from .forms import OrderForm, OrderItemFormSet, OrderDeleteForm, OrderChangeForm
 from .models import Order
+from .serializers import OrderSerializer
 
 
 class CreateOrder(TemplateView):
@@ -84,3 +87,11 @@ class ChangeStatusOrder(UpdateView):
     def get_success_url(self):
         order_id = self.kwargs.get("pk")
         return reverse("orders:detail", kwargs={"pk": order_id})
+
+
+class AsyncAPIOrder(ModelViewSet):
+    queryset = (Order.objects
+                .prefetch_related("items")
+                .prefetch_related("items__dish")
+                .all())
+    serializer_class = OrderSerializer
