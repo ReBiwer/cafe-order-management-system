@@ -27,3 +27,8 @@ OrderItemFormSet = inlineformset_factory(
     extra=1,
     can_delete=True,
 )
+
+class OrderDeleteForm(forms.Form):
+    class Meta:
+        model = Order
+        fields = ["table_number"]

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Заказ №{{ order.pk }}
+{% endblock %}
+
+{% block body %}
+  <h1>Увереный что хотите удалить заказ?</h1>
+
+  <form method="POST">
+    {% csrf_token %}
+    <p>Заказ №{{ order.pk }}</p>
+    <p>Номер стола №{{ order.table_number }}</p>
+    <p>Статус: {{ order.status }}</p>
+    <p>Стоимость: {{ order.total_price }}</p>
+
+    <table class="bordered-table">
+      <thead>
+      <tr>Состав заказа</tr>
+      <tr>
+        <th>Блюдо</th>
+        <th>Кол-во</th>
+        <th>Цена</th>
+      </tr>
+      </thead>
+        <tbody>
+        {% for order_item in order.items.all %}
+        <tr>
+          <th>{{ order_item.dish.name }}</th>
+          <th>{{ order_item.quantity }}</th>
+          <th>{{ order_item.price }}</th>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit">Удалить заказ</button>
+  </form>
+{% endblock %}
