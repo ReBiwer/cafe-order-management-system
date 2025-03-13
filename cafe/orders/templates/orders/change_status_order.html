@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Заказ №{{ order.pk }}
+{% endblock %}
+
+{% block body %}
+    <p>Заказ №{{ order.pk }}</p>
+    <p>Номер стола №{{ order.table_number }}</p>
+    <p>Статус: {{ order.get_status_display }}</p>
+    <p>Стоимость: {{ order.total_price }}</p>
+
+    <table class="bordered-table">
+      <thead>
+      <tr>Состав заказа</tr>
+      <tr>
+        <th>Блюдо</th>
+        <th>Кол-во</th>
+        <th>Цена</th>
+      </tr>
+      </thead>
+        <tbody>
+        {% for order_item in order.items.all %}
+        <tr>
+          <th>{{ order_item.dish.name }}</th>
+          <th>{{ order_item.quantity }}</th>
+          <th>{{ order_item.price }}</th>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  <form method="POST" action="{% url 'orders:change_status' order.pk %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить изменения</button>
+  </form>
+{% endblock %}

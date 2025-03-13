@@ -2,10 +2,10 @@ from django.http import Http404
 from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, ListView, DetailView, DeleteView
+from django.views.generic import TemplateView, ListView, DetailView, DeleteView, UpdateView
 
 from orders import utils
-from .forms import OrderForm, OrderItemFormSet, OrderDeleteForm
+from .forms import OrderForm, OrderItemFormSet, OrderDeleteForm, OrderChangeForm
 from .models import Order
 
 
@@ -66,3 +66,21 @@ class DeleteOrder(DeleteView):
                 .prefetch_related("items")
                 .prefetch_related("items__dish")
                 )
+
+
+class ChangeStatusOrder(UpdateView):
+    form_class = OrderChangeForm
+    template_name = "orders/change_status_order.html"
+    context_object_name = "order"
+
+    def get_queryset(self):
+        order_id = self.kwargs.get("pk")
+        return (Order.objects
+                .filter(pk=order_id)
+                .prefetch_related("items")
+                .prefetch_related("items__dish")
+                )
+
+    def get_success_url(self):
+        order_id = self.kwargs.get("pk")
+        return reverse("orders:detail", kwargs={"pk": order_id})

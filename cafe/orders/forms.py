@@ -47,7 +47,7 @@ class OrderDeleteForm(forms.Form):
         return cleaned_data
 
 
-class OrderChangeForm(forms.Form):
+class OrderChangeForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ["status"]
