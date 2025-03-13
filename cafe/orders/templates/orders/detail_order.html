@@ -8,7 +8,7 @@
   <h1>Заказ №{{ order.pk }}</h1>
   <h2>Столик №{{ order.table_number }}</h2>
   <p>Статус: {{ order.status }}</p>
-    <p>Стоимость: {{ order.total_price }}</p>
+  <p>Стоимость: {{ order.total_price }}</p>
 
     <table class="bordered-table">
       <thead>
@@ -29,4 +29,5 @@
         {% endfor %}
         </tbody>
     </table>
+  <a href="{% url 'orders:delete' order.pk %}">Удалить заказ</a>
 {% endblock %}
