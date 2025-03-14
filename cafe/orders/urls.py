@@ -15,6 +15,6 @@ urlpatterns = [
     path('delete/<int:pk>/', DeleteOrder.as_view(), name="delete"),
     path('change_status/<int:pk>/', ChangeStatusOrder.as_view(), name="change_status"),
     # API
-    path("api/v1/", include(router.urls)),
+    path("api/v1/", include(router.urls), name="api_order"),
     path("api/v1/search/<str:value_search>", AsyncSearchAPIOrder.as_view(), name="search_order")
 ]
