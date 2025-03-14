@@ -22,7 +22,6 @@
         <h4>Стол № {{ order.table_number }}</h4>
         <p>Статус: {{ order.get_status_display }}</p>
         <p>Стоимость: {{ order.total_price }}</p>
-        <p><a href="{% url 'orders:delete' order.pk %}">Удалить заказ</a></p>
 
         <table class="bordered-table">
           <thead>
