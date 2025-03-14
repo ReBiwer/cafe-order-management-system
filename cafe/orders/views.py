@@ -1,4 +1,8 @@
-from adrf.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
+from rest_framework.request import Request
+from rest_framework.response import Response
+from django.db.models import Q
 
 from django.http import Http404
 from django.http import HttpRequest
@@ -95,3 +99,23 @@ class AsyncAPIOrder(ModelViewSet):
                 .prefetch_related("items__dish")
                 .all())
     serializer_class = OrderSerializer
+
+
+class AsyncSearchAPIOrder(APIView):
+
+    def get(self, request: Request, value_search: str | int):
+        if not value_search.isdigit():
+            queryset = (
+                Order.objects
+                .filter(status=value_search)
+                .prefetch_related("items")
+                .prefetch_related("items__dish")
+            ).get()
+        else:
+            queryset = (
+                Order.objects
+                .filter(table_number=value_search)
+                .prefetch_related("items")
+                .prefetch_related("items__dish")
+            ).get()
+        return Response(data=OrderSerializer(queryset).data)
