@@ -21,14 +21,14 @@ class OrderItemSerializer(ModelSerializer):
 
 class OrderSerializer(ModelSerializer):
     order_items = OrderItemSerializer(many=True, source="items")
-    status_display = serializers.CharField(
+    status = serializers.CharField(
         source='get_status_display',
         read_only=True
     )
 
     class Meta:
         model = Order
-        fields = ["id", "table_number", "status_display", "total_price", "order_items"]
+        fields = ["id", "table_number", "status", "total_price", "order_items"]
         read_only_fields = ["id"]
 
     def create(self, validated_data):
