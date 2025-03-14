@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "drf_spectacular",
-    "adrf",
+    "rest_framework",
     "debug_toolbar",
     'orders',
 ]

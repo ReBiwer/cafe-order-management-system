@@ -1,12 +1,12 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from .views import CreateOrder, ListOrders, DetailOrder, DeleteOrder, ChangeStatusOrder, AsyncAPIOrder, AsyncSearchAPIOrder
+from .views import CreateOrder, ListOrders, DetailOrder, DeleteOrder, ChangeStatusOrder, APIOrder, SearchAPIOrder
 
 app_name = "orders"
 
 router = routers.DefaultRouter()
-router.register(r'', AsyncAPIOrder, basename="api_order")
+router.register(r'', APIOrder, basename="api_order")
 
 urlpatterns = [
     path('', ListOrders.as_view(), name="list"),
@@ -16,5 +16,6 @@ urlpatterns = [
     path('change_status/<int:pk>/', ChangeStatusOrder.as_view(), name="change_status"),
     # API
     path("api/v1/", include(router.urls), name="api_order"),
-    path("api/v1/search/<str:value_search>", AsyncSearchAPIOrder.as_view(), name="search_order")
+    path("api/v1/search/", SearchAPIOrder.as_view(), name="search_order"),
+    path("api/v1/search/<str:value_search>/", SearchAPIOrder.as_view(), name="search_order")
 ]

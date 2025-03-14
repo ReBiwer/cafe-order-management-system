@@ -2,13 +2,12 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from django.db.models import Q
 
 from django.http import Http404
 from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, ListView, DetailView, DeleteView, UpdateView
+from django.views.generic import TemplateView, ListView, DetailView, DeleteView, UpdateView, View
 
 from orders import utils
 from .forms import OrderForm, OrderItemFormSet, OrderDeleteForm, OrderChangeForm
@@ -93,7 +92,7 @@ class ChangeStatusOrder(UpdateView):
         return reverse("orders:detail", kwargs={"pk": order_id})
 
 
-class AsyncAPIOrder(ModelViewSet):
+class APIOrder(ModelViewSet):
     queryset = (Order.objects
                 .prefetch_related("items")
                 .prefetch_related("items__dish")
@@ -101,7 +100,7 @@ class AsyncAPIOrder(ModelViewSet):
     serializer_class = OrderSerializer
 
 
-class AsyncSearchAPIOrder(APIView):
+class SearchAPIOrder(APIView):
 
     def get(self, request: Request, value_search: str | int):
         STATUS_MAPPING = {
@@ -132,13 +131,13 @@ class AsyncSearchAPIOrder(APIView):
             else:
                 queryset = (
                     Order.objects
-                    .filter(table_number=value_search)
+                    .filter(table_number=int(value_search))
                     .prefetch_related("items")
                     .prefetch_related("items__dish")
                 ).all()
             if queryset:
-                result = [OrderSerializer(order).data for order in queryset]
-                return Response(data=result)
+                result = OrderSerializer(queryset, many=True)
+                return Response(result.data)
             else:
                 raise Http404("No data found")
         except Exception as e:

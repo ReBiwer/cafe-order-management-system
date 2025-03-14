@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
   Список заказов
@@ -8,37 +9,50 @@
 {% if orders %}
     <h1>Список заказов</h1>
     <h2><a href="{% url 'orders:create' %}">Добавить заказ</a></h2>
-    {% for order in orders %}
-    <div>
-      <h3><a href="{% url 'orders:detail' pk=order.pk %}">Заказ №{{ order.pk }}</a></h3>
-      <h4>Стол № {{ order.table_number }}</h4>
-      <p>Статус: {{ order.status }}</p>
-      <p>Стоимость: {{ order.total_price }}</p>
-      <p><a href="{% url 'orders:delete' order.pk %}">Удалить заказ</a></p>
+    <form id="searchForm">
+      <input type="text"
+           id="searchInput"
+           placeholder="Введите номер стола или статус..."
+           class="form-control">
+    </form>
+    <div id="ordersContainer">
+      {% for order in orders %}
+      <div class="order-card">
+        <h3><a href="{% url 'orders:detail' pk=order.pk %}">Заказ №{{ order.pk }}</a></h3>
+        <h4>Стол № {{ order.table_number }}</h4>
+        <p>Статус: {{ order.get_status_display }}</p>
+        <p>Стоимость: {{ order.total_price }}</p>
+        <p><a href="{% url 'orders:delete' order.pk %}">Удалить заказ</a></p>
 
-      <table class="bordered-table">
-        <thead>
-        <tr>Состав заказа</tr>
-        <tr>
-          <th>Блюдо</th>
-          <th>Кол-во</th>
-          <th>Цена</th>
-        </tr>
-        </thead>
-          <tbody>
-          {% for order_item in order.items.all %}
+        <table class="bordered-table">
+          <thead>
+          <tr>Позиции</tr>
           <tr>
-            <th>{{ order_item.dish.name }}</th>
-            <th>{{ order_item.quantity }}</th>
-            <th>{{ order_item.price }}</th>
+            <th>Блюдо</th>
+            <th>Кол-во</th>
+            <th>Цена</th>
           </tr>
-          {% endfor %}
-          </tbody>
-      </table>
+          </thead>
+            <tbody>
+            {% for order_item in order.items.all %}
+            <tr>
+              <th>{{ order_item.dish.name }}</th>
+              <th>{{ order_item.quantity }}</th>
+              <th>{{ order_item.price }}</th>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+      </div>
+      {% endfor %}
     </div>
-    {% endfor %}
 {% else %}
 <h1>Заказов пока нет</h1>
 <h2><a href="{% url 'orders:create' %}">Добавить заказ</a></h2>
 {% endif %}
+{% endblock %}
+
+{% block script %}
+<script>const urlSearchOrder = "{% url 'orders:search_order' %}"</script>
+<script src="{% static 'js/search_order.js' %}"></script>
 {% endblock %}
