@@ -21,7 +21,7 @@
         <h3><a href="{% url 'orders:detail' pk=order.pk %}">Заказ №{{ order.pk }}</a></h3>
         <h4>Стол № {{ order.table_number }}</h4>
         <p>Статус: {{ order.get_status_display }}</p>
-        <p>Стоимость: {{ order.total_price }}</p>
+        <p>Сумма: {{ order.total_price }} ₽</p>
 
         <table class="bordered-table">
           <thead>

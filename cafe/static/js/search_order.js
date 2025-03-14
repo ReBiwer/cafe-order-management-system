@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Статус: ${order.status}</p>
                 <p>Сумма: ${order.total_price} ₽</p>
 
-                <table class="bordered-table">Позиции
+                <table class="bordered-table">
                     <thead>
                       <tr>Позиции</tr>
                       <tr>
