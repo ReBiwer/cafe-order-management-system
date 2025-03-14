@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse
 
 class Dish(models.Model):
     name = models.CharField(max_length=100, verbose_name="Название")
@@ -33,6 +33,9 @@ class Order(models.Model):
         verbose_name="Общая стоимость"
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    def get_absolute_url(self):
+        return reverse('orders:detail', kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"Заказ #{self.id} (Стол {self.table_number})"
