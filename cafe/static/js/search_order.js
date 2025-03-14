@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function performSearch(query) {
         try {
-            const url = urlSearchOrder  + query + '/'
+            const url = urlSearchOrder  + '?value_search=' + query
             const response = await fetch(url);
             if (!response.ok) throw new Error('HTTP error');
             const data = await response.json();

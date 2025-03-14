@@ -102,7 +102,8 @@ class APIOrder(ModelViewSet):
 
 class SearchAPIOrder(APIView):
 
-    def get(self, request: Request, value_search: str | int):
+    def get(self, request: Request):
+        value_search = request.query_params.get('value_search')
         STATUS_MAPPING = {
             'в ожидании': 'pending',
             'ожидании': 'pending',
