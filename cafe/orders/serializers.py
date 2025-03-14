@@ -25,11 +25,16 @@ class OrderSerializer(ModelSerializer):
         source='get_status_display',
         read_only=True
     )
+    url = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
-        fields = ["id", "table_number", "status", "total_price", "order_items"]
+        fields = ["id", "table_number", "status", "total_price", "order_items", "url"]
         read_only_fields = ["id"]
+
+    def get_url(self, obj: Order):
+        return obj.get_absolute_url()
+
 
     def create(self, validated_data):
         items_data = validated_data.pop('order_items')
