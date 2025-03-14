@@ -13,9 +13,9 @@ class Dish(models.Model):
 
 class Order(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'В ожидании'),
-        ('ready', 'Готово'),
-        ('paid', 'Оплачено'),
+        ('pending', 'в ожидании'),
+        ('ready', 'готово'),
+        ('paid', 'оплачено'),
     ]
 
     table_number = models.PositiveIntegerField(verbose_name="Номер стола")
