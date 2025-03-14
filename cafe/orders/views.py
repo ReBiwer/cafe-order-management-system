@@ -104,13 +104,29 @@ class AsyncAPIOrder(ModelViewSet):
 class AsyncSearchAPIOrder(APIView):
 
     def get(self, request: Request, value_search: str | int):
+        STATUS_MAPPING = {
+            'в ожидании': 'pending',
+            'ожидании': 'pending',
+            'готово': 'ready',
+            'готов': 'ready',
+            'оплачено': 'paid'
+        }
         if not value_search.isdigit():
-            queryset = (
-                Order.objects
-                .filter(status=value_search)
-                .prefetch_related("items")
-                .prefetch_related("items__dish")
-            ).get()
+            if value_search.lower() in STATUS_MAPPING:
+                status_order = STATUS_MAPPING.get(value_search.lower())
+                queryset = (
+                    Order.objects
+                    .filter(status=status_order)
+                    .prefetch_related("items")
+                    .prefetch_related("items__dish")
+                ).get()
+            elif value_search.lower() in STATUS_MAPPING.keys():
+                queryset = (
+                    Order.objects
+                    .filter(status=value_search)
+                    .prefetch_related("items")
+                    .prefetch_related("items__dish")
+                ).get()
         else:
             queryset = (
                 Order.objects
