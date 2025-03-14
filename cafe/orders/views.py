@@ -111,27 +111,35 @@ class AsyncSearchAPIOrder(APIView):
             'готов': 'ready',
             'оплачено': 'paid'
         }
-        if not value_search.isdigit():
-            if value_search.lower() in STATUS_MAPPING:
-                status_order = STATUS_MAPPING.get(value_search.lower())
+        queryset = None
+        try:
+            if not value_search.isdigit():
+                if value_search.lower() in STATUS_MAPPING:
+                    status_order = STATUS_MAPPING.get(value_search.lower())
+                    queryset = (
+                        Order.objects
+                        .filter(status=status_order)
+                        .prefetch_related("items")
+                        .prefetch_related("items__dish")
+                    ).all()
+                elif value_search.lower() in STATUS_MAPPING.keys():
+                    queryset = (
+                        Order.objects
+                        .filter(status=value_search)
+                        .prefetch_related("items")
+                        .prefetch_related("items__dish")
+                    ).all()
+            else:
                 queryset = (
                     Order.objects
-                    .filter(status=status_order)
+                    .filter(table_number=value_search)
                     .prefetch_related("items")
                     .prefetch_related("items__dish")
-                ).get()
-            elif value_search.lower() in STATUS_MAPPING.keys():
-                queryset = (
-                    Order.objects
-                    .filter(status=value_search)
-                    .prefetch_related("items")
-                    .prefetch_related("items__dish")
-                ).get()
-        else:
-            queryset = (
-                Order.objects
-                .filter(table_number=value_search)
-                .prefetch_related("items")
-                .prefetch_related("items__dish")
-            ).get()
-        return Response(data=OrderSerializer(queryset).data)
+                ).all()
+            if queryset:
+                result = [OrderSerializer(order).data for order in queryset]
+                return Response(data=result)
+            else:
+                raise Http404("No data found")
+        except Exception as e:
+            raise Http404("No data found")
