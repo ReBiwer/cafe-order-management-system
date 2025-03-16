@@ -55,7 +55,7 @@ class OrderItem(models.Model):
         related_name='dishes_in_orders',
         verbose_name="Блюдо в заказе"
     )
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена", null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
     quantity = models.PositiveIntegerField(default=1, verbose_name="Количество")
 
     def save(self, *args, **kwargs):
@@ -69,4 +69,5 @@ class OrderItem(models.Model):
 class Shift(models.Model):
     date_open = models.DateTimeField(auto_now=True, verbose_name="Дата открытия смены")
     active = models.BooleanField(default=True)
+    revenue = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Выручка", null=True, blank=True)
     date_close = models.DateTimeField(verbose_name="Дата закрытия смены")
