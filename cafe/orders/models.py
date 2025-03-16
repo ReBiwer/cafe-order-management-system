@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 
+from .exceptions import CountShiftException
+
 class Dish(models.Model):
     name = models.CharField(max_length=100, verbose_name="Название")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
@@ -77,3 +79,9 @@ class Shift(models.Model):
     active = models.BooleanField(default=True)
     revenue = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Выручка", null=True, blank=True)
     date_close = models.DateTimeField(verbose_name="Дата закрытия смены", null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        exist_shift = Shift.objects.filter(active=True).exists()
+        if exist_shift:
+            raise CountShiftException()
+        return super().save(*args, **kwargs)
