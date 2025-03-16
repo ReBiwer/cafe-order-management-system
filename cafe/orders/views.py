@@ -10,9 +10,22 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, DeleteView, UpdateView, View
 
 from orders import utils
+from .exceptions import CountShiftException
 from .forms import OrderForm, OrderItemFormSet, OrderDeleteForm, OrderChangeForm
-from .models import Order
+from .models import Order, Shift
 from .serializers import OrderSerializer
+
+
+class OpenShift(View):
+
+    def post(self, request: HttpRequest):
+        try:
+            Shift.objects.create()
+        except CountShiftException as e:
+            return redirect(reverse("orders:exist_shift"))
+        else:
+            return redirect(reverse("orders:list"))
+
 
 
 class CreateOrder(TemplateView):
