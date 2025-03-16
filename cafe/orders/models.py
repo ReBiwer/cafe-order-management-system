@@ -32,7 +32,13 @@ class Order(models.Model):
         editable=False,
         verbose_name="Общая стоимость"
     )
-    shift = models.ForeignKey('Shift', on_delete=models.PROTECT, related_name="orders", verbose_name="Смена")
+    shift = models.ForeignKey(
+        'Shift',
+        on_delete=models.PROTECT,
+        related_name="orders",
+        verbose_name="Смена",
+        default=None
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def get_absolute_url(self):
@@ -55,7 +61,7 @@ class OrderItem(models.Model):
         related_name='dishes_in_orders',
         verbose_name="Блюдо в заказе"
     )
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена", default=0)
     quantity = models.PositiveIntegerField(default=1, verbose_name="Количество")
 
     def save(self, *args, **kwargs):
@@ -70,4 +76,4 @@ class Shift(models.Model):
     date_open = models.DateTimeField(auto_now=True, verbose_name="Дата открытия смены")
     active = models.BooleanField(default=True)
     revenue = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Выручка", null=True, blank=True)
-    date_close = models.DateTimeField(verbose_name="Дата закрытия смены")
+    date_close = models.DateTimeField(verbose_name="Дата закрытия смены", null=True, blank=True)
