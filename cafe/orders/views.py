@@ -54,14 +54,14 @@ class CreateOrder(TemplateView):
 class ListOrders(ListView):
     model = Order
     template_name = "orders/list_orders.html"
-    context_object_name = "orders"
+    context_object_name = "shift"
 
     def get_queryset(self):
         queryset = (
-            Order.objects
-            .prefetch_related("items")
-            .prefetch_related("items__dish")
-            .all()
+            Shift.objects
+            .prefetch_related("orders")
+            .prefetch_related("orders__items")
+            .prefetch_related("orders__items__dish")
         )
         return queryset
 

@@ -6,7 +6,8 @@
 {% endblock %}
 
 {% block body %}
-{% if orders %}
+{% if shift %}
+  {% if shift.orders %}
     <h1>Список заказов</h1>
     <h2><a href="{% url 'orders:create' %}">Добавить заказ</a></h2>
     <form id="searchForm">
@@ -16,7 +17,7 @@
            class="form-control">
     </form>
     <div id="ordersContainer">
-      {% for order in orders %}
+      {% for order in shift.orders %}
       <div class="order-card">
         <h3><a href="{% url 'orders:detail' pk=order.pk %}">Заказ №{{ order.pk }}</a></h3>
         <h4>Стол № {{ order.table_number }}</h4>
@@ -45,9 +46,16 @@
       </div>
       {% endfor %}
     </div>
+  {% else %}
+    <h1>Заказов пока нет</h1>
+    <h2><a href="{% url 'orders:create' %}">Добавить заказ</a></h2>
+  {% endif %}
 {% else %}
-<h1>Заказов пока нет</h1>
-<h2><a href="{% url 'orders:create' %}">Добавить заказ</a></h2>
+<h1>Смена не открыта</h1>
+<form method="POST" action="{% url 'orders:open_shift' %}">
+  {% csrf_token %}
+  <button type="submit">Открыть смену</button>
+</form>
 {% endif %}
 {% endblock %}
 

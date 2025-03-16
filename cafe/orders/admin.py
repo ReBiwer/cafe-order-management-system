@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Order, OrderItem, Dish
+from .models import Order, OrderItem, Dish, Shift
 
 
 @admin.register(Order)
@@ -19,4 +19,10 @@ class OrderItemAdmin(admin.ModelAdmin):
 class DishAdmin(admin.ModelAdmin):
     list_display = [
         "name", "available",
+    ]
+
+@admin.register(Shift)
+class ShiftAdmin(admin.ModelAdmin):
+    list_display = [
+        "date_open", "active"
     ]
