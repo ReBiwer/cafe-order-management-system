@@ -5,6 +5,15 @@ from shift.models import Shift
 
 
 class Dish(models.Model):
+    """
+    Модель блюда. Данная модель представляет собой блюда, которые имеются в кафе.
+    Любые операции с ними можно делать только в админ панели
+    fields:
+        name - название блюда
+        price - цена блюда
+        description - описание блюда
+        available - наличие блюда
+    """
     name = models.CharField(max_length=100, verbose_name="Название")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
     description = models.TextField(null=True, blank=True, verbose_name="Описание блюда")
@@ -15,6 +24,17 @@ class Dish(models.Model):
 
 
 class Order(models.Model):
+    """
+    Модель заказа. Данная модель представляет собой заказа. Создать заказ можно только при открытой смене.
+    fields:
+        table_number - номер столика к которому относится данный заказ
+        status - статус заказа (в ожидании, готово, оплачено)
+        total_price - общая стоимость заказа. Высчитывается автоматически при удалении или добавлении блюд
+        shift - смена в которую был создан данный заказ (привязывается при создании заказа)
+        created_at - время создания заказа
+
+        items - related_name связанное внешним ключом с моделью OrderItem
+    """
     STATUS_CHOICES = [
         ('pending', 'в ожидании'),
         ('ready', 'готово'),
@@ -52,6 +72,15 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    """
+    Модель элемента заказа. Данная модель представляет элемент заказа.
+    Связана с блюдом на основании которого был добавлен данная позиция.
+    fields:
+        order - внешний ключ связанный с заказом (related_name - items)
+        dish - внешний ключ связанный с блюдом в кафе (related_name - dishes_in_orders)
+        price - цена позиции заказа
+        quantity - количество в заказе
+    """
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
@@ -73,5 +102,3 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.dish.name} x{self.quantity}"
-
-

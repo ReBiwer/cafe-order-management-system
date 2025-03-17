@@ -2,7 +2,6 @@ from datetime import datetime
 
 from django.db import transaction
 from django.db.models import Sum
-from django.db.transaction import rollback, commit
 from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -14,6 +13,9 @@ from shift.models import Shift
 
 
 class OpenShift(View):
+    """
+    Представление для открытия смены. Принимает только POST запрос
+    """
 
     def post(self, request: HttpRequest):
         try:
@@ -29,6 +31,9 @@ class OpenShift(View):
 
 
 class CloseShift(View):
+    """
+    Представление для закрытия смены. Принимает только POST запрос
+    """
 
     def post(self, request: HttpRequest):
         with transaction.atomic():
@@ -47,12 +52,18 @@ class CloseShift(View):
 
 
 class ShiftList(ListView):
+    """
+    Представление для отображения всех смен
+    """
     template_name = "shift/list_shifts.html"
     context_object_name = "shifts"
     model = Shift
 
 
 class ShiftDetail(DetailView):
+    """
+    Представление для отображения деталей смены
+    """
     template_name = "shift/detail_shift.html"
     context_object_name = "shift"
 

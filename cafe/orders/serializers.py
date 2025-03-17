@@ -5,12 +5,18 @@ from .models import Order, OrderItem, Dish
 
 
 class DishSerializer(ModelSerializer):
+    """
+    Сериализатор для модели Dish
+    """
     class Meta:
         model = Dish
         fields = ["id", "name", "description"]
 
 
 class OrderItemSerializer(ModelSerializer):
+    """
+    Сериализатор для позиции заказа
+    """
     dish = DishSerializer()
 
     class Meta:
@@ -20,6 +26,13 @@ class OrderItemSerializer(ModelSerializer):
 
 
 class OrderSerializer(ModelSerializer):
+    """
+    Сериализатор для заказа
+    fields:
+        order_items - список позиций заказа
+        status - статус заказа
+        url - генерируемое поле ссылки на заказ
+    """
     order_items = OrderItemSerializer(many=True, source="items")
     status = serializers.CharField(
         source='get_status_display',
@@ -37,6 +50,11 @@ class OrderSerializer(ModelSerializer):
 
 
     def create(self, validated_data):
+        """
+        Переопределенный метод создания модели Order с созданием OrderItem
+        :param validated_data: валидные данные
+        :return:
+        """
         items_data = validated_data.pop('order_items')
         order = Order.objects.create(**validated_data)
         for item_data in items_data:
@@ -45,10 +63,15 @@ class OrderSerializer(ModelSerializer):
                 dish=item_data['dish'],
                 quantity=item_data['quantity']
             )
-
         return order
 
     def update(self, instance, validated_data):
+        """
+        Переопределенный метод обновления модели Order и связанных с ним OrderItem
+        :param instance: экземпляр модели, который обновляется
+        :param validated_data: валидные данные заказа
+        :return:
+        """
         items_data = validated_data.pop('order_items', [])
 
         # Обновление полей заказа
