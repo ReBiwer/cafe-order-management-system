@@ -7,7 +7,7 @@ app_name = "shift"
 
 
 urlpatterns = [
-    path("/", ShiftList.as_view(), name="list"),
+    path("", ShiftList.as_view(), name="list"),
     path("open_shift/", OpenShift.as_view(), name="open"),
     path("close_shift/", CloseShift.as_view(), name="close"),
     path("shift_exist/", TemplateView.as_view(template_name="shift/exist_shift.html"), name="exist"),
