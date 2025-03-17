@@ -6,7 +6,12 @@
 {% endblock %}
 
 {% block body %}
-{% if shift %}
+{% if shift.active %}
+  <form method="POST" action="{% url 'orders:close_shift' %}">
+    {% csrf_token %}
+    <button type="submit">Закрыть смену</button>
+  </form>
+
   {% if shift.orders %}
     <h1>Список заказов</h1>
     <h2><a href="{% url 'orders:create' %}">Добавить заказ</a></h2>
@@ -17,7 +22,7 @@
            class="form-control">
     </form>
     <div id="ordersContainer">
-      {% for order in shift.orders %}
+      {% for order in shift.orders.all %}
       <div class="order-card">
         <h3><a href="{% url 'orders:detail' pk=order.pk %}">Заказ №{{ order.pk }}</a></h3>
         <h4>Стол № {{ order.table_number }}</h4>
@@ -50,6 +55,7 @@
     <h1>Заказов пока нет</h1>
     <h2><a href="{% url 'orders:create' %}">Добавить заказ</a></h2>
   {% endif %}
+
 {% else %}
 <h1>Смена не открыта</h1>
 <form method="POST" action="{% url 'orders:open_shift' %}">

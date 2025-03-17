@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from django.db.models import Sum
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.request import Request
@@ -6,6 +9,7 @@ from rest_framework.response import Response
 from django.http import Http404
 from django.http import HttpRequest
 from django.shortcuts import redirect
+from django.db import transaction
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, DeleteView, UpdateView, View
 
@@ -21,11 +25,28 @@ class OpenShift(View):
     def post(self, request: HttpRequest):
         try:
             Shift.objects.create()
-        except CountShiftException as e:
+        except CountShiftException:
             return redirect(reverse("orders:exist_shift"))
         else:
             return redirect(reverse("orders:list"))
 
+
+class CloseShift(View):
+
+    def post(self, request: HttpRequest):
+        with transaction.atomic():
+            open_shift: Shift = Shift.objects.filter(active=True).get()
+            open_shift.active = False
+            revenue = (
+                Shift.objects
+                .filter(pk=open_shift.pk)
+                .select_related("orders")
+                .aggregate(shift_revenue=Sum("orders__total_price"))
+            )
+            open_shift.revenue = revenue["shift_revenue"]
+            open_shift.date_close = datetime.now()
+            open_shift.save()
+        return redirect(reverse("orders:list"))
 
 
 class CreateOrder(TemplateView):
@@ -52,7 +73,6 @@ class CreateOrder(TemplateView):
 
 
 class ListOrders(ListView):
-    model = Order
     template_name = "orders/list_orders.html"
     context_object_name = "shift"
 
@@ -62,6 +82,7 @@ class ListOrders(ListView):
             .prefetch_related("orders")
             .prefetch_related("orders__items")
             .prefetch_related("orders__items__dish")
+            .get()
         )
         return queryset
 
