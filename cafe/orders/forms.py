@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 
-from .models import Order
+from .models import Order, Shift
 from .models import OrderItem
 
 
@@ -9,6 +9,11 @@ class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ["table_number"]
+
+    def save(self, commit=True):
+        current_shift = Shift.objects.filter(active=True).get()
+        self.instance.shift = current_shift
+        return super().save(commit)
 
 
 class OrderItemForm(forms.ModelForm):
