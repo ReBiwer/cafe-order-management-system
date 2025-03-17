@@ -36,7 +36,7 @@ class CloseShift(View):
             open_shift.active = False
             revenue = (
                 Shift.objects
-                .filter(pk=open_shift.pk)
+                .filter(pk=open_shift.pk, orders__status="paid")
                 .select_related("orders")
                 .aggregate(shift_revenue=Sum("orders__total_price"))
             )
