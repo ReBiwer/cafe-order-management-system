@@ -18,3 +18,5 @@ class Shift(models.Model):
     revenue = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Выручка", null=True, blank=True)
     date_close = models.DateTimeField(verbose_name="Дата закрытия смены", null=True, blank=True)
 
+    def __str__(self):
+        return f"Дата откртытия смены {self.date_open}"
