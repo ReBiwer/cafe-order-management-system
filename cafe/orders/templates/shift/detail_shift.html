@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Смена от {{ shift.date_open }}
+{% endblock %}
+
+{% block body %}
+  <h1>Список заказов</h1>
+    <div id="ordersContainer">
+      {% for order in shift.orders.all %}
+      <div class="order-card">
+        <h3><a href="{% url 'orders:detail' pk=order.pk %}">Заказ №{{ order.pk }}</a></h3>
+        <h4>Стол № {{ order.table_number }}</h4>
+        <p>Статус: {{ order.get_status_display }}</p>
+        <p>Сумма: {{ order.total_price }} ₽</p>
+        <table class="bordered-table">
+          <thead>
+          <tr>Позиции</tr>
+          <tr>
+            <th>Блюдо</th>
+            <th>Кол-во</th>
+            <th>Цена</th>
+          </tr>
+          </thead>
+            <tbody>
+            {% for order_item in order.items.all %}
+            <tr>
+              <th>{{ order_item.dish.name }}</th>
+              <th>{{ order_item.quantity }}</th>
+              <th>{{ order_item.price }}</th>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+{% endblock %}

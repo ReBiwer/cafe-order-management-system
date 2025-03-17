@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework import routers
 from django.views.generic import TemplateView
 
-from .views import CreateOrder, ListOrders, DetailOrder, DeleteOrder, ChangeStatusOrder, APIOrder, SearchAPIOrder, OpenShift, CloseShift
+from .views import CreateOrder, ListOrders, DetailOrder, DeleteOrder, ChangeStatusOrder, APIOrder, SearchAPIOrder, OpenShift, CloseShift, ShiftList, ShiftDetail
 
 app_name = "orders"
 
@@ -13,6 +13,8 @@ urlpatterns = [
     path('', ListOrders.as_view(), name="list"),
     path("open_shift/", OpenShift.as_view(), name="open_shift"),
     path("close_shift/", CloseShift.as_view(), name="close_shift"),
+    path("list_shift/", ShiftList.as_view(), name="list_shift"),
+    path("detail_shift/<int:pk>/", ShiftDetail.as_view(), name="shift_detail"),
     path("shift_exist/", TemplateView.as_view(template_name="shift/exist_shift.html"), name="exist_shift"),
     path('create/', CreateOrder.as_view(), name="create"),
     path("search/", SearchAPIOrder.as_view(), name="search_order"),

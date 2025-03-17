@@ -49,6 +49,23 @@ class CloseShift(View):
         return redirect(reverse("orders:list"))
 
 
+class ShiftList(ListView):
+    template_name = "shift/list_shifts.html"
+    context_object_name = "shifts"
+    model = Shift
+
+
+class ShiftDetail(DetailView):
+    template_name = "shift/detail_shift.html"
+    context_object_name = "shift"
+
+    def get_queryset(self):
+        return (Shift.objects
+                .prefetch_related("orders")
+                .prefetch_related("orders__items")
+                .prefetch_related("orders__items__dish")
+                )
+
 class CreateOrder(TemplateView):
     template_name = "orders/create_order.html"
 

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block body %}
+  <h1>Список смен</h1>
+  {% for shift in shifts %}
+    {% if not shift.active %}
+      <div>
+        <p>Даты открытия смены: {{ shift.date_open }}</p>
+        <p>Дата закрытия смены: {{ shift.date_close }}</p>
+        <p>Выручка: {{ shift.revenue }}</p>
+        <p><a href="{% url 'orders:shift_detail' shift.pk %}">Детали</a></p>
+      </div>
+    {% else %}
+      <div>
+        <p>Дата открытия смены: {{ shift.date_open }}</p>
+        <p><a href="{% url 'orders:list' %}">Смена открыта</a></p>
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
