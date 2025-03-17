@@ -75,13 +75,12 @@ class OrderItem(models.Model):
 
 
 class Shift(models.Model):
-    date_open = models.DateTimeField(auto_now=True, verbose_name="Дата открытия смены")
+    date_open = models.DateTimeField(auto_created=True, verbose_name="Дата открытия смены")
     active = models.BooleanField(default=True)
     revenue = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Выручка", null=True, blank=True)
     date_close = models.DateTimeField(verbose_name="Дата закрытия смены", null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        exist_shift = Shift.objects.filter(active=True).exists()
-        if exist_shift:
+        if self.active:
             raise CountShiftException()
         return super().save(*args, **kwargs)
