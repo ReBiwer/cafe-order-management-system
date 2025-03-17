@@ -8,63 +8,18 @@ from rest_framework.response import Response
 
 from django.http import Http404
 from django.http import HttpRequest
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.db import transaction
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, DeleteView, UpdateView, View
 
 from orders import utils
-from .exceptions import CountShiftException
+from shift.models import Shift
 from .forms import OrderForm, OrderItemFormSet, OrderDeleteForm, OrderChangeForm
-from .models import Order, Shift
+from .models import Order
 from .serializers import OrderSerializer
 
 
-class OpenShift(View):
-
-    def post(self, request: HttpRequest):
-        try:
-            Shift.objects.create()
-        except CountShiftException:
-            return redirect(reverse("orders:exist_shift"))
-        else:
-            return redirect(reverse("orders:list"))
-
-
-class CloseShift(View):
-
-    def post(self, request: HttpRequest):
-        with transaction.atomic():
-            open_shift: Shift = Shift.objects.filter(active=True).get()
-            open_shift.active = False
-            revenue = (
-                Shift.objects
-                .filter(pk=open_shift.pk)
-                .select_related("orders")
-                .aggregate(shift_revenue=Sum("orders__total_price"))
-            )
-            open_shift.revenue = revenue["shift_revenue"]
-            open_shift.date_close = datetime.now()
-            open_shift.save()
-        return redirect(reverse("orders:list"))
-
-
-class ShiftList(ListView):
-    template_name = "shift/list_shifts.html"
-    context_object_name = "shifts"
-    model = Shift
-
-
-class ShiftDetail(DetailView):
-    template_name = "shift/detail_shift.html"
-    context_object_name = "shift"
-
-    def get_queryset(self):
-        return (Shift.objects
-                .prefetch_related("orders")
-                .prefetch_related("orders__items")
-                .prefetch_related("orders__items__dish")
-                )
 
 class CreateOrder(TemplateView):
     template_name = "orders/create_order.html"
@@ -94,13 +49,16 @@ class ListOrders(ListView):
     context_object_name = "shift"
 
     def get_queryset(self):
-        queryset = (
-            Shift.objects
-            .prefetch_related("orders")
-            .prefetch_related("orders__items")
-            .prefetch_related("orders__items__dish")
-            .get()
-        )
+        try:
+            queryset = get_object_or_404(
+                Shift.objects
+                .filter(active=True)
+                .prefetch_related("orders")
+                .prefetch_related("orders__items")
+                .prefetch_related("orders__items__dish")
+            )
+        except Exception as e:
+            queryset = None
         return queryset
 
 

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "debug_toolbar",
     'orders',
+    "shift",
 ]
 
 REST_FRAMEWORK = {

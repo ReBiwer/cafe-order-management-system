@@ -10,7 +10,7 @@
         <p>Даты открытия смены: {{ shift.date_open }}</p>
         <p>Дата закрытия смены: {{ shift.date_close }}</p>
         <p>Выручка: {{ shift.revenue }}</p>
-        <p><a href="{% url 'orders:shift_detail' shift.pk %}">Детали</a></p>
+        <p><a href="{% url 'shift:detail' shift.pk %}">Детали</a></p>
       </div>
     {% else %}
       <div>
@@ -19,4 +19,5 @@
       </div>
     {% endif %}
   {% endfor %}
+<h2><a href="{% url 'orders:list' %}">К списку заказов</a></h2>
 {% endblock %}

@@ -6,8 +6,8 @@
 {% endblock %}
 
 {% block body %}
-{% if shift.active %}
-  <form method="POST" action="{% url 'orders:close_shift' %}">
+{% if shift and shift.active %}
+  <form method="POST" action="{% url 'shift:close' %}">
     {% csrf_token %}
     <button type="submit">Закрыть смену</button>
   </form>
@@ -58,10 +58,11 @@
 
 {% else %}
 <h1>Смена не открыта</h1>
-<form method="POST" action="{% url 'orders:open_shift' %}">
+<form method="POST" action="{% url 'shift:open' %}">
   {% csrf_token %}
   <button type="submit">Открыть смену</button>
 </form>
+<h2><a href="{% url 'shift:list' %}">К списку смен</a></h2>
 {% endif %}
 {% endblock %}
 

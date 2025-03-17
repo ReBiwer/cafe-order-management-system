@@ -1,7 +1,8 @@
 from django import forms
 from django.forms import inlineformset_factory
 
-from .models import Order, Shift
+from shift.models import Shift
+from .models import Order
 from .models import OrderItem
 
 
