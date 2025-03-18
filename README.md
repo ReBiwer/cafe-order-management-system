@@ -38,6 +38,16 @@ $ docker compose up -d
 pip install -r requirements.txt
 ```
 
+Выполните миграции
+```bash
+python manage.py migrate
+```
+
+Создайте суперпользователя для добавления блюд в систему для оформления заказов
+```bash
+python manage.py createsuperuser
+```
+
 Запустите сервер
 ```bash
 python manage.py runserver
