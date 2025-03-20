@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Добавляем элементы заказа (OrderItem)
             const itemsList = orderCard.querySelector('.bordered-table');
-            order.order_items.forEach(item => {
+            order.items.forEach(item => {
                 const itemElement = document.createElement('tr');
                 itemElement.className = 'order-item';
                 itemElement.innerHTML = `
